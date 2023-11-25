@@ -1,0 +1,24 @@
+name: wp-base
+recipe: wordpress
+env_file:
+  - .env
+config:
+  webroot: ./web/
+  xdebug: true
+  php: '8.2'
+  composer_version: 2-latest
+  via: nginx
+  database: mariadb
+services:
+  appserver:
+    build:
+      - composer install
+  adminer:
+    type: compose
+    services:
+      image: dehy/adminer
+      command: /bin/s6-svscan /etc/services.d
+    portforward: true
+proxy:
+  adminer:
+    - adminer.wp-base.lndo.site
